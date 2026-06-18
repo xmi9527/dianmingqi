@@ -1,0 +1,39 @@
+# ============================================
+# GitHub Actions：自动打包点名器为 Windows exe
+# 无需 Windows 电脑，GitHub 远程打包
+# ============================================
+# 使用方法：
+# 1. 把整个文件夹上传到 GitHub 仓库
+# 2. 到仓库的 Actions 页面手动触发
+# 3. 几分钟后下载成品 exe
+# ============================================
+name: 打包点名器
+
+on:
+  workflow_dispatch:  # 手动触发
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装依赖
+        run: |
+          pip install pyinstaller openpyxl pillow
+
+      - name: 打包为 exe
+        run: |
+          pyinstaller --onefile --noconsole --name "点名器" --icon icon.ico 点名器.py
+
+      - name: 上传成品
+        uses: actions/upload-artifact@v4
+        with:
+          name: 点名器.exe
+          path: dist/点名器.exe
