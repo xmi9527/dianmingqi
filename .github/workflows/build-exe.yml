@@ -1,0 +1,17 @@
+name: 打包点名器
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pyinstaller openpyxl pillow
+      - run: pyinstaller --onefile --noconsole --name "点名器" --icon icon.ico 点名器.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 点名器.exe
+          path: dist/点名器.exe
